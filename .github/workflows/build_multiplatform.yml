@@ -201,6 +201,7 @@ jobs:
             generator: Unix Makefiles
             daemon_binary_name: freedata-daemon
             tnc_binary_name: freedata-tnc
+            launcher_binary_name: freedata-launcher
             electron_parameters: "-p always"
 
           - os: macos-11
@@ -208,6 +209,7 @@ jobs:
             generator: Unix Makefiles
             daemon_binary_name: freedata-daemon
             tnc_binary_name: freedata-tnc
+            launcher_binary_name: freedata-launcher
             electron_parameters: "-p always"
 
           - os: windows-latest
@@ -215,6 +217,7 @@ jobs:
             generator: Visual Studio 16 2019
             daemon_binary_name: freedata-daemon.exe
             tnc_binary_name: freedata-tnc.exe
+            launcher_binary_name: freedata-launcher.exe
             electron_parameters: "-p always --x64 --ia32"
     steps:
       - name: Checkout code for ${{ matrix.platform.name }}
@@ -297,6 +300,7 @@ jobs:
           # python3 -m nuitka --enable-plugin=numpy --assume-yes-for-downloads --onefile main.py -o ${{ matrix.tnc_binary_name }}
           python3 -m nuitka --enable-plugin=numpy --assume-yes-for-downloads --standalone daemon.py
           python3 -m nuitka --enable-plugin=numpy --assume-yes-for-downloads --standalone main.py
+          python3 -m nuitka --enable-plugin=numpy --assume-yes-for-downloads --standalone launcher.py
 
       - name: Copy binaries - Linux
         if: ${{startsWith(matrix.os, 'ubuntu')}}
@@ -320,6 +324,7 @@ jobs:
         run: |
           mv dist/tnc/daemon* dist/tnc/${{ matrix.daemon_binary_name }}
           mv dist/tnc/main* dist/tnc/${{ matrix.tnc_binary_name }}
+          mv dist/tnc/launcher* dist/tnc/${{ matrix.launcher_binary_name }}
 
       - uses: actions/download-artifact@v3
         with:
